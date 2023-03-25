@@ -1,8 +1,11 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.scss";
 import axios from "axios";
+import { useState } from "react";
 
 export default function Home() {
+  const [chatGptResponse, setChatGptResponse] = useState("");
+
   const handleOnChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const chat: string = `以下の文章から、ユーザーの悩みを察知してアドバイスをください。\n\n${e.target.value}`;
     // もし末尾に「?」もしくは「？」があれば、ChatGPTのAPIを叩く
@@ -12,6 +15,8 @@ export default function Home() {
       const res = await axios.get("/api/chatgpt?chat=" + chat);
       const data = await res.data;
       console.log(data.chat);
+
+      setChatGptResponse(data.chat);
     }
   };
 
@@ -24,11 +29,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div>
+        <div className={styles.container}>
           <textarea
             className={styles.memoTextarea}
             onChange={(e) => handleOnChange(e)}
           ></textarea>
+          <div className={styles.chatGptArea}>
+            <div className={styles.chatGptArea__chat}>{chatGptResponse}</div>
+          </div>
         </div>
       </main>
     </>

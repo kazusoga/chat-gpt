@@ -1,12 +1,17 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
+import axios from "axios";
 
 export default function Home() {
-  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleOnChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const chat: string = `以下の文章から、ユーザーの悩みを察知してアドバイスをください。\n\n${e.target.value}`;
     // もし末尾に「?」もしくは「？」があれば、ChatGPTのAPIを叩く
-    if (e.target.value.match(/[\?|？]$/)) {
+    if (chat.match(/[\?|？]$/)) {
       // ChatGPTのAPIを叩く
-      console.log("ChatGPTのAPIを叩く");
+      console.log("Waiting for ChatGPT...");
+      const res = await axios.get("/api/chatgpt?chat=" + chat);
+      const data = await res.data;
+      console.log(data.chat);
     }
   };
 
